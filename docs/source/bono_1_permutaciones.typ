@@ -18,7 +18,7 @@
   2. Calcular $n"P"k$
   3. Validar que $n$ y $r$ sean enteros no negativos
   4. Mostrar el procedimiento usado
-  5. Comparar al menos dos casos, por ejemplo $10"P"3$ y $20"P"5$.
+  5. Comparar al menos dos casos, por ejemplo $10"P"3$ y $20"P"5$
 
   *Extensión opcional:* comparar una implementación recursiva y una iterativa del factorial.
 ]
@@ -52,7 +52,7 @@
   Por el otro lado, la k-permutación es un tipo de permutación en el que se seleccionan $k$ elementos de un conjunto de $n$ elementos y cuenta cuantas posibilidades de elegir hay. La fórmula para esto es:
 
   $
-    n"P"k = n!/(n - k)!
+    n"P"k = P(n, k) =  n!/(n - k)!
   $
 
   Es necesario que $k <= n$, porque si no, $n - k$ es negativo, y por ende $(n - k)!$ no existe.
