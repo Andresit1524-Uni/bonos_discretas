@@ -1,4 +1,5 @@
 #import "style.typ": callout, style
+#import "utils.typ": pascal_triangle
 #show: style.with(header: "Bono 2 - Combinaciones")
 
 = Bono 2 - Combinaciones
@@ -50,14 +51,182 @@ $
 Esta notación también muy común está asociada con el *teorema de Newton* o teorema del binomio, que usa este combinatorias para determinar los coeficientes de la potencia de un binomio.
 
 === Triángulo de Pascal
-El triángulo de Pascal es una estructura matemática para
+El triángulo de Pascal es una estructura matemática para mostrar los valores de los coeficientes de un triángulo de números. Cada número es la suma de los dos números directamente encima de él. La fila $n$ del triángulo de Pascal corresponde a los coeficientes binomiales $binom(n, k)$ para $k = 0, 1, ..., n$.
+
+#columns(2)[
+  #figure(caption: "Triángulo de Pascal hasta el nivel 8")[
+    #pascal_triangle(8, hspace: 24pt)
+  ]
+  #colbreak()
+  #figure(caption: "Triángulo de Pascal, en formato de coeficiente binomial")[
+    #pascal_triangle(8, hspace: 24pt, binomial: true)
+  ]
+]
+
+De aquí podemos derivar algunas propiedades:
+
++ Como el triángulo es simétrico, los lados a la misma distancia de los extremos son iguales en valor. Esto es la *identidad de Pascal*:
+
+  $
+    binom(n, k) = binom(n, n - k)
+  $
+
++ Los extremos de las filas son 1, entonces:
+
+  $
+    binom(n, 0) = binom(n, n) = 1
+  $
+
++ Sumar dos elementos consecutivos en una fila obtiene el elemento de debajo. Formalmente:
+
+  $
+    binom(n, k) + binom(n, k + 1) = binom(n + 1, k + 1)
+  $
 
 #pagebreak()
 
 == Implementación
+
+=== Combinaciones
+De forma sencilla, sabemos que tenemos a la mano la librería `math`, la cual ofrece el método `math.comb`:
+
+
+```py
+import math as m
+
+print(m.comb(5, 3)) # -> 10
+```
+
+
+Antes de proceder con el código de nuestra versión, por supuesto, vamos a averiguar como funcionan las combinaciones para desarrollar optimizaciones.
+
+Usando la regla de Pascal sabemos que:
+
+$
+  binom(n, k) + binom(n, k - 1) = binom(n + 1, k + 1)
+$
+
+Usando esto podemos derivar una forma recursiva de la combinación. La puedes verificar visualmente usando el triángulo de Pascal:
+
+$
+  binom(n, k) = binom(n - 1, k) + binom(n - 1, k - 1)
+$
+
+Por supuesto, si es recursivo, necesitamos un caso base. Los casos base son:
+
+$
+  binom(n, 0) = 1, quad binom(n, n) = 1
+$
+
+Implementado en Python nos queda así. Usamos anotaciones de tipo para mejor legibilidad:
+
+```py
+def recursive_combination(n: int, k: int) -> int:
+    """Calcula combinaciones de forma recursiva usando la regla de Pascal"""
+
+    # Error de tipo si no son enteros
+    if type(n) is not int or type(k) is not int:
+        raise TypeError(f"Valores no válidos: {n}, {k}")
+
+    # Error si alguno es menor que cero o si n es menor que k
+    if n < 0 or k < 0 or n < k:
+        raise ValueError(f"Valores no válidos: {n}, {k}")
+
+    # Caso base
+    if k == 0 or k == n:
+        return 1
+
+    # Recursión
+    return recursive_combination(n - 1, k) + recursive_combination(n - 1, k - 1)
+```
+
+Sin embargo nos pueden preocupar los casos grandes, porque esta función es recursiva y se presta para altos consumos de memoria, calculos duplicados y un tiempo de ejecución exponencial. Para esto, podemos usar *memoización* para guardar los resultados de las combinaciones ya calculadas y evitar cálculos repetidos:
+
+```py
+cached = {}
+def memoized_combination(n: int, k: int) -> int:
+    if (n, k) in cached:
+        return cached[(n, k)]
+
+    # Error de tipo si no son enteros
+    if type(n) is not int or type(k) is not int:
+        raise TypeError(f"Valores no válidos: {n}, {k}")
+
+    # Error si alguno es menor que cero o si n es menor que k
+    if n < 0 or k < 0 or n < k:
+        raise ValueError(f"Valores no válidos: {n}, {k}")
+
+    # Caso base
+    if k == 0 or k == n:
+        cached[(n, k)] = 1
+        return 1
+
+    # Recursión
+    result = memoized_combination(n - 1, k) + memoized_combination(n - 1, k - 1)
+    cached[(n, k)] = result
+    return result
+```
+
+Esto reducirá los cálculos enormemente, pero igual el consumo de memoria empeora.
+
+#pagebreak()
+
+=== Triángulo de Pascal
+Mientras me encontraba escribiendo este artículo para el bono, encontré en internet esta función en Typst (aunque la he modificado un poco) para generar los triángulos de Pascal:
+
+#link("https://forum.typst.app/t/generating-pascals-triangle/3702")[Fuente]
+
+```typ
+#let pascal_triangle(n) = {
+  set align(center)
+  let row = ()
+  for r in range(0, n) {
+    // step the row
+    for i in range(row.len() - 1, 0, step: -1) {
+      row.at(i) = row.at(i) + row.at(i - 1)
+    }
+    row.push(1)
+    // print the row
+    grid(
+      columns: row.len() * (32pt,),
+      align: center,
+      //stroke : 0.2pt,
+      ..row.map(str)
+    )
+  }
+}
+```
+
+Por lo que decidiré reutilizarla en Python para hacer el triángulo. Su funcionamiento se basa en la propiedad:
+
+$
+  binom(n, k) + binom(n, k + 1) = binom(n + 1, k + 1)
+$
+
+Con la cual sobrescribe una fila para armar la siguientee, luego le añade un uno al final para completarle, imprime y repite el proceso. De esta forma, cada fila se construye a partir de la anterior, y se imprime a medida que se va construyendo:
+
+```py
+def pascal_triangle(n: int):
+    """Imprime el triángulo de Pascal con n filas"""
+
+    row = []
+    for _ in range(n):
+        # Crea la fila
+        for i in range(len(row) - 1, 0, -1):
+            row[i] = row[i] + row[i - 1]
+        row.append(1)
+
+        # Imprime la fila
+        print("\t".join(str(x) for x in row))
+```
+
+#pagebreak()
 
 == Comentarios y extras
 
 == Referencias
 - https://es.khanacademy.org/math/precalculus/x9e81a4f98389efdf:prob-comb/x9e81a4f98389efdf:combinations/v/introduction-to-combinations
 - https://es.khanacademy.org/math/precalculus/x9e81a4f98389efdf:prob-comb/x9e81a4f98389efdf:combinations/v/combination-formula
+- https://es.wikipedia.org/wiki/Tri%C3%A1ngulo_de_Pascal
+- https://es.wikipedia.org/wiki/Coeficiente_binomial
+- https://noesis.uis.edu.co/server/api/core/bitstreams/d0c3f853-dc1b-4742-9038-6e6b91650b95/content
