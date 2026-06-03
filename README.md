@@ -21,16 +21,6 @@ $$
 
 El programa valida los valores y tipos ingresados, usa diferentes técnicas como recursión e iteración e imprime los resultados de forma ordenada. Una mejor explicación se encuentra en la [documentación del bono](./docs/bono_1_permutaciones.pdf)
 
-<!-- Preguntas que me quedan:
-
-A que se refiere la actividad con:
-
-1. Mostrar el procedimiento usado
-2. Comparar al menos dos casos
-
-Los tengo pendientes
--->
-
 ## Calculadora general de combinaciones
 La calculadora de combinaciones puede recibir dos enteros $n$ y $k$ y dependiendo del caso elegido por el usuario, calcula la combinación. La fórmula para ello es:
 
@@ -49,14 +39,16 @@ $$
 
 3. Imprime ejemplos de uso
 
-Este está pendiente de hacerse.
+Al igual que el primer bono, este trabajo valida los datos, incluye diferentes técnicas de programación y las compara. Encuentra más información en la [documentación](./docs/bono_2_combinaciones.pdf)
 
-## Dependencia y uso
+
+
+## Dependencias y uso
 Para el correcto uso de este repositorio se necesitan las siguientes herramientas:
 
-1. Python (uso el 3.15) pero debería funcionar cualquiera moderno
+1. Python (uso el 3.15 pero debería funcionar cualquiera moderno)
 2. [Typst](https://typst.app/open-source/#download) (opcional, si quieres compilar la documentación)
-3. Un editor de código (recomendado)
+3. Un editor de código (recomendado) y sus extensiones si es el caso.
 
 ## Instrucciones
 1. Clona este repositorio
@@ -82,6 +74,7 @@ Para el correcto uso de este repositorio se necesitan las siguientes herramienta
 
 4. Si quieres compilar la documentación (aunque ya lo está, es opcional):
    
+   > [!Warning]
    > Instala Typst primero y asegúrate que el comando `typst` funcione.
 
     ```bash
@@ -124,4 +117,4 @@ La permutación se logra con el factorial como lo vemos en la fórmula del princ
 Conoce la implementación de cada función haciendo `Ctrl + Click` (en el script real en VSCode) o visita [el script directamente](./bono_1_permutaciones/functions.py).
 
 ### Segundo bono: combinaciones
-*Este esta pendiente de programarse.*
+_Este esta pendiente de programarse a nivel de API. Espera un poco 🗣️🔥_
