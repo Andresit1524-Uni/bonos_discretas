@@ -65,13 +65,12 @@ def iterative_combination(n: int, k: int) -> int:
     if n < 0 or k < 0 or n < k:
         raise ValueError(f"Valores no válidos: {n}, {k}")
 
-    # Optimizamos usando la propiedad C(n, k) = C(n, n - k)
+    # Optimizamos usando la identidad de Pascal
     k = min(k, n - k)
 
     result: int = 1
     for i in range(k):
         result *= (n - i) // (k - i)
-        print(result)
 
     return result
 

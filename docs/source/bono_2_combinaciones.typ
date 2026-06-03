@@ -41,18 +41,18 @@ $
 
 Es necesario que $k <= n$, porque si no, $n - k$ es negativo, y por ende $(n - k)!$ no existe.
 
-En la combinación el orden de selección de los elementos nunca importa. La permutación puede considerarse un superset de las combinaciones donde le orden si importa.
+En la combinación el orden de selección de los elementos nunca importa. La permutación puede considerarse un superset de las combinaciones donde el orden si importa.
 
-Otra notación para las comabinaciones la llamada *notación binomial*:
+Otra notación para las combinaciones la llamada *notación binomial*:
 
 $
   n"C"k = binom(n, k)
 $
 
-Esta notación también muy común está asociada con el *teorema de Newton* o teorema del binomio, que usa este combinatorias para determinar los coeficientes de la potencia de un binomio.
+Esta notación también muy común está asociada con el *teorema de Newton* o teorema del binomio, que usa estos coeficientes para determinar los coeficientes de la potencia de un binomio. No por nada se llaman *coeficientes binomiales*.
 
 === Triángulo de Pascal
-El triángulo de Pascal es una estructura matemática para mostrar los valores de los coeficientes de un triángulo de números. Cada número es la suma de los dos números directamente encima de él. La fila $n$ del triángulo de Pascal corresponde a los coeficientes binomiales $binom(n, k)$ para $k = 0, 1, ..., n$.
+El triángulo de Pascal es una estructura matemática para ordenar los valores de los coeficientes de un triángulo de números. Cada número es la suma de los dos números directamente encima de él. La fila $n$ del triángulo de Pascal corresponde a los coeficientes binomiales $binom(n, k)$ para $k = 0, 1, ..., n$.
 
 #columns(2)[
   #figure(caption: "Triángulo de Pascal hasta el nivel 8")[
@@ -78,7 +78,7 @@ De aquí podemos derivar algunas propiedades:
     binom(n, 0) = binom(n, n) = 1
   $
 
-+ Sumar dos elementos consecutivos en una fila obtiene el elemento de debajo. Formalmente:
++ Sumar dos elementos consecutivos en una fila obtiene el elemento de debajo. Esta es la *regla de Pascal*:
 
   $
     binom(n, k) + binom(n, k + 1) = binom(n + 1, k + 1)
@@ -88,7 +88,7 @@ De aquí podemos derivar algunas propiedades:
 
 == Implementación
 
-=== Combinaciones
+=== Combinaciones recursivas
 De forma sencilla, sabemos que tenemos a la mano la librería `math`, la cual ofrece el método `math.comb`:
 
 ```py
@@ -139,7 +139,10 @@ def recursive_combination(n: int, k: int) -> int:
     return recursive_combination(n - 1, k) + recursive_combination(n - 1, k - 1)
 ```
 
-Sin embargo nos pueden preocupar los casos grandes, porque esta función es recursiva y se presta para altos consumos de memoria, calculos duplicados y un tiempo de ejecución exponencial. Para esto, podemos usar *memoización* para guardar los resultados de las combinaciones ya calculadas y evitar cálculos repetidos:
+Sin embargo nos pueden preocupar los casos grandes, porque esta función es recursiva y se presta para altos consumos de memoria, calculos duplicados y un riesgo de `RecursionError` en Python.
+
+=== Memoización
+Para solucionar los problemas de la recursión, podemos usar la *memoización* para guardar los resultados de las combinaciones ya calculadas y evitar cálculos repetidos:
 
 ```py
 cached = {}
@@ -166,9 +169,10 @@ def memoized_combination(n: int, k: int) -> int:
     return result
 ```
 
-Esto reducirá los cálculos enormemente, pero igual el consumo de memoria empeora.
+Esto reducirá los cálculos enormemente, pero igual el consumo de memoria empeora. Sin embargo a la hora de reutilizar ahorra muchísimo tiempo, especialmente para casos grandes donde se generan lotes de resultados precalculados y listos para la próxima.
 
-Para una última versión volvamos a la fórmula original:
+=== Combinaciones iterativas
+Para una última versión de la combinatoria, volvamos a la fórmula original:
 
 $
   binom(n, k) = n!/(k! (n - k)!)
@@ -189,7 +193,7 @@ $
   binom(n, k) & = n/1 dot (n - 1)/2 dot (n - 2)/3 dot ... dot (n - k + 1)/k \
 $
 
-¿Notas como empezamos con $n/k$ y vamos restando de a uno en cada término? Podemos generalizarlo con un producto para cada secuencia respectivamente:
+Podemos generalizarlo con un producto para cada secuencia respectivamente:
 
 $
   binom(n, k) = product_(i = 0)^(k - 1) (n - i)/(k - i) = product_(i = 1)^(k) (n - i + 1)/i
@@ -199,23 +203,22 @@ Esta es la forma más eficiente de calcular la combinación, al reducirlo a un p
 
 ```py
 def iterative_combination(n: int, k: int) -> int:
-    """Calcula combinaciones de forma iterativa usando la fรณrmula desenrollada"""
+    """Calcula combinaciones de forma iterativa usando la fórmula desenrollada"""
 
     # Error de tipo si no son enteros
     if type(n) is not int or type(k) is not int:
-        raise TypeError(f"Valores no vรกlidos: {n}, {k}")
+        raise TypeError(f"Valores no válidos: {n}, {k}")
 
     # Error si alguno es menor que cero o si n es menor que k
     if n < 0 or k < 0 or n < k:
-        raise ValueError(f"Valores no vรกlidos: {n}, {k}")
+        raise ValueError(f"Valores no válidos: {n}, {k}")
 
-    # Optimizamos usando la propiedad C(n, k) = C(n, n - k)
+    # Optimizamos usando la identidad de Pascal
     k = min(k, n - k)
 
     result: int = 1
     for i in range(k):
         result *= (n - i) // (k - i)
-        print(result)
 
     return result
 ```
@@ -223,7 +226,7 @@ def iterative_combination(n: int, k: int) -> int:
 Nótese que incluimos una optimización:
 
 ```py
-# Optimizamos usando la propiedad C(n, k) = C(n, n - k)
+# Optimizamos usando la identidad de Pascal
 k = min(k, n - k)
 ```
 
@@ -233,12 +236,12 @@ $
   binom(n, k) = binom(n, n - k)
 $
 
-Esto nos permite reducir el número de términos a calcular, usando el número más pequeño de los dos disponibles sin alterar el resultado. Si funciona, está es la prueba de la identidad.
+Esto nos permite reducir el número de términos a calcular, usando el número más pequeño de los dos disponibles sin alterar el resultado. Si funciona, está implementación es la prueba.
 
 #pagebreak()
 
 === Triángulo de Pascal
-Mientras me encontraba escribiendo este artículo para el bono, encontré en internet esta función en Typst (aunque la he modificado un poco) para generar los triángulos de Pascal:
+Mientras me encontraba escribiendo este artículo para el bono, encontré en internet esta función en Typst para generar los triángulos de Pascal de más arriba:
 
 #link("https://forum.typst.app/t/generating-pascals-triangle/3702")[Fuente]
 
