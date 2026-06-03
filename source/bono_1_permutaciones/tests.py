@@ -11,7 +11,7 @@ Por simplicidad se contrastan todos los resultados con math.factorial y math.per
 
 import unittest
 import math as m
-import functions as f
+import source.bono_1_permutaciones.functions as f
 
 
 class TestValidInputs(unittest.TestCase):

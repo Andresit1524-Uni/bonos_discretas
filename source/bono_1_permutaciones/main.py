@@ -1,5 +1,6 @@
 import os
-import functions as f
+import source.bono_1_permutaciones.functions as f
+import source.utils.utils as u
 
 
 # region Casos
@@ -8,15 +9,15 @@ import functions as f
 def make_iterative_permutation():
     """Pide al usuario un número y calcula su permutación usando factorial iterativo"""
 
-    f.print_margin("Has elegido: Calcular permutaciones (factorial iterativo)")
-    n = f.get_integer("| Ingrese el valor de n (entero no negativo)", 0)
+    u.print_margin("Has elegido: Calcular permutaciones (factorial iterativo)")
+    n = u.get_integer("| Ingrese el valor de n (entero no negativo)", 0)
     if n is None:
         return
     result: int = f.iterative_factorial(n)
 
-    f.print_margin(f"Puedes permutar {n} elementos de {result} formas diferentes")
-    f.print_margin("Calculado de forma iterativa")
-    f.blank_line()
+    u.print_margin(f"Puedes permutar {n} elementos de {result} formas diferentes")
+    u.print_margin("Calculado de forma iterativa")
+    u.blank_line()
 
 
 def make_recursive_permutation():
@@ -24,38 +25,38 @@ def make_recursive_permutation():
     optimización de cola (TCO)
     """
 
-    f.print_margin("Has elegido: Calcular permutaciones (factorial recursivo)")
-    n = f.get_integer("| Ingrese el valor de n (entero no negativo)", 0)
+    u.print_margin("Has elegido: Calcular permutaciones (factorial recursivo)")
+    n = u.get_integer("| Ingrese el valor de n (entero no negativo)", 0)
     if n is None:
         return
 
     result1: int = f.recursive_factorial(n)
-    f.print_margin(f"Puedes permutar {n} elementos de {result1} formas diferentes")
-    f.print_margin("Calculado de forma recursiva")
-    f.blank_line()
+    u.print_margin(f"Puedes permutar {n} elementos de {result1} formas diferentes")
+    u.print_margin("Calculado de forma recursiva")
+    u.blank_line()
 
     result2: int = f.recursive_factorial_tco(n)
-    f.print_margin(f"Puedes permutar {n} elementos de {result2} formas diferentes")
-    f.print_margin("Calculado de forma recursiva con TCO")
-    f.blank_line()
+    u.print_margin(f"Puedes permutar {n} elementos de {result2} formas diferentes")
+    u.print_margin("Calculado de forma recursiva con TCO")
+    u.blank_line()
 
 
 def make_k_permutation():
     """Pide al usuario dos números y calcula su k-permutación"""
 
-    f.print_margin("Has elegido: Calcular k-permutaciones")
-    n = f.get_integer("| Ingrese el valor de n (entero no negativo)", 0)
+    u.print_margin("Has elegido: Calcular k-permutaciones")
+    n = u.get_integer("| Ingrese el valor de n (entero no negativo)", 0)
     if n is None:
         return
-    k = f.get_integer("| Ingrese el valor de k (para permutación, n >= k)", 0)
+    k = u.get_integer("| Ingrese el valor de k (para permutación, n >= k)", 0)
     if k is None:
         return
     result = f.k_permutation(n, k)
 
-    f.print_margin(
+    u.print_margin(
         f"Puedes elegir {k} elementos de un conjunto de {n} de {result} formas diferentes"
     )
-    f.blank_line()
+    u.blank_line()
 
 
 # endregion
@@ -87,10 +88,10 @@ while True:
 
     # Bucle principal
     try:
-        value = f.get_integer("| Ingrese su opción", 1, 4)
-        f.blank_line()
+        value = u.get_integer("| Ingrese su opción", 1, 4)
+        u.blank_line()
         if value is None:
-            f.print_margin("Saliendo (entrada cancelada)")
+            u.print_margin("Saliendo (entrada cancelada)")
             break
         match value:
             case 1:
@@ -100,15 +101,15 @@ while True:
             case 3:
                 make_k_permutation()
             case 4:
-                f.print_margin("Saliendo")
+                u.print_margin("Saliendo")
                 break
     except ValueError as e:
         os.system("cls" if os.name == "nt" else "clear")
-        f.print_margin(
+        u.print_margin(
             f"Error: {e}. Por favor, asegúrese de ingresar números enteros válidos."
         )
-        f.blank_line()
+        u.blank_line()
     except Exception as e:
         os.system("cls" if os.name == "nt" else "clear")
-        f.print_margin(f"Ocurrió un error inesperado: {e}")
-        f.blank_line()
+        u.print_margin(f"Ocurrió un error inesperado: {e}")
+        u.blank_line()
