@@ -22,13 +22,13 @@
   *Extensión opcional:* generar todo el triángulo de Pascal hasta la fila n.
 ]
 
-== Descripión matemática
+== Descripción matemática
 
 === Combinaciones
 Las combinaciones son una técnica de conteo para averiguar todas las formas en las que se puede seleccionar $k$ elementos de un conjunto de $n$ elementos. La fórmula para lograr esto es:
 
 $
-  n"C"k = n!/(k! (n - k!))
+  n"C"k = n!/(k! (n - k)!)
 $
 
 #quote(block: true)[
@@ -43,7 +43,7 @@ Es necesario que $k <= n$, porque si no, $n - k$ es negativo, y por ende $(n - k
 
 En la combinación el orden de selección de los elementos nunca importa. La permutación puede considerarse un superset de las combinaciones donde el orden si importa.
 
-Otra notación para las combinaciones la llamada *notación binomial*:
+Otra notación para las combinaciones es la llamada *notación binomial*:
 
 $
   n"C"k = binom(n, k)
@@ -266,13 +266,13 @@ Mientras me encontraba escribiendo este artículo para el bono, encontré en int
 }
 ```
 
-Por lo que decidiré reutilizarla en Python para hacer el triángulo. Su funcionamiento se basa en la propiedad:
+Por lo que decidiré reutilizarla en Python para hacer el triángulo en consola. Su funcionamiento se basa en la propiedad:
 
 $
-  binom(n, k) + binom(n, k + 1) = binom(n + 1, k + 1)
+  binom(n + 1, k + 1) = binom(n, k) + binom(n, k + 1)
 $
 
-Con la cual sobrescribe una fila para armar la siguientee, luego le añade un uno al final para completarle, imprime y repite el proceso. De esta forma, cada fila se construye a partir de la anterior, y se imprime a medida que se va construyendo:
+Con la cual sobrescribe una fila para armar la siguiente, elemento por elemento, luego le añade un uno al final para completarle, imprime y repite el proceso. De esta forma, cada fila se construye a partir de la anterior, y se imprime a medida que se va construyendo:
 
 ```py
 def pascal_triangle(n: int):
@@ -291,11 +291,32 @@ def pascal_triangle(n: int):
 
 #pagebreak()
 
+=== Aplicación de consola
+Para una aplicación de consola solo usaremos `print`s e `input`s para seguir un flujo de usuario básico. También se incluyen verificaciones de errores bien manejados y un código limpio y modular.
+
+El programa estará en el archivo `bono_2_combinaciones/main.py`
+
+=== Pruebas y casos especiales
+Para probar este sistema vamos a probar cuatro casos, con varios ejemplos diferentes para cada caso y por cada algoritmo:
+
++ Números correctos en un rango común (1-100)
++ Uso de negativos y del cero
++ Números grandes (superiores a 1000)
++ Entradas incorrectas (mal rango o tipo incorrecto)
+
+Este programa estará en el archivo `bono_2_combinaciones/tests.py`
+
+#pagebreak()
+
 == Comentarios y extras
++ Lee los comentarios del primer bono primero.
++ Al igual que con las permutaciones, la versión iterativa es probablemente la más adecuada por consumo de memoria, rendimiento y menos desperdicio.
++ Me he encontrado con buenos recursos para la escritura de estos dos bonos, como #link("https://github.com/vbasky/sublime-vscode-plus")[esta gramática de lenguaje para Sublime] que me permitío añadir resaltado de código estilo VSCode. También disponible en #link("https://gist.github.com/Andresit1524/d5b765ce28f743121907ce3419cfbe80")[este gist con la versión en `tmTheme`] (el formato que Typst usa para sus temas de sintaxis), también disponible en este repo (`vscode_darkplus.tmTheme`).
++ Cada día me arrepiento menos de no haber usado libretas de jupyter para estos bonos. Que hasta dan ganas de crear una alternativa a jupyter que si sirva bien. Quizá aprenda Rust para lograrlo.
 
 == Referencias
-- https://es.khanacademy.org/math/precalculus/x9e81a4f98389efdf:prob-comb/x9e81a4f98389efdf:combinations/v/introduction-to-combinations
-- https://es.khanacademy.org/math/precalculus/x9e81a4f98389efdf:prob-comb/x9e81a4f98389efdf:combinations/v/combination-formula
-- https://es.wikipedia.org/wiki/Tri%C3%A1ngulo_de_Pascal
-- https://es.wikipedia.org/wiki/Coeficiente_binomial
-- https://noesis.uis.edu.co/server/api/core/bitstreams/d0c3f853-dc1b-4742-9038-6e6b91650b95/content
+- Khan Academy. (s.f.). _Introducción a las combinaciones_ [Video]. https://es.khanacademy.org/math/precalculus/x9e81a4f98389efdf:prob-comb/x9e81a4f98389efdf:combinations/v/introduction-to-combinations
+- Khan Academy. (s.f.). _Fórmula de las combinaciones_ [Video]. https://es.khanacademy.org/math/precalculus/x9e81a4f98389efdf:prob-comb/x9e81a4f98389efdf:combinations/v/combination-formula
+- Wikipedia. (2024). _Triángulo de Pascal_. https://es.wikipedia.org/wiki/Triángulo_de_Pascal
+- Wikipedia. (2024). _Coeficiente binomial_. https://es.wikipedia.org/wiki/Coeficiente_binomial
+- Universidad Industrial de Santander. (s.f.). _Análisis combinatorio_. Repositorio Noesis. https://noesis.uis.edu.co/server/api/core/bitstreams/d0c3f853-dc1b-4742-9038-6e6b91650b95/content
