@@ -2,19 +2,20 @@
 #import "utils.typ": pascal_triangle
 #show: style.with(header: "Bono 2 - Combinaciones")
 
+
 = Bono 2 - Combinaciones
 
-#callout(color: rgb("#a5f3fc"))[
+#callout()[
   Diseñe un programa que reciba $n$ y $r$, con $0 <= r <= n$, y calcule el número de formas de escoger $r$ objetos entre $n$ objetos distintos sin importar el orden:
 
   $
-    binom(n, k) = n!/(k! (n - k)!)
+    binom(n, r) = n!/(r! (n - r)!)
   $
 
   El programa debe permitir:
 
   + Calcular $binom(n, r)$ para cualquier entrada válida
-  + Verificar automáticamente la identidad $binom(n, k) = binom(n, n - k)$
+  + Verificar automáticamente la identidad $binom(n, r) = binom(n, n - r)$
   + Generar la fila $n$ del triángulo de Pascal
   + Imprimir ejemplos de uso
 
@@ -31,7 +32,7 @@ $
 $
 
 #quote(block: true)[
-  Nótese que es igual a la fórmula de la k-permutación, pero con un $k!$ en el denominador. Esto equivale a tomar todas las combinaciones y dividirlo por las $k!$ posibles órdenes de la selección, para contar las selecciones únicas. En otras palabras:
+  Nótese que es igual a la fórmula de la k-permutación, pero con un $k!$ en el denominador. Esto equivale a tomar todas las combinaciones y dividirlo por las $k!$ posibles órdenes de la selección, para contar solo las selecciones únicas. En otras palabras:
 
   $
     n"C"k = P(n, k)/k!
@@ -90,13 +91,11 @@ De aquí podemos derivar algunas propiedades:
 === Combinaciones
 De forma sencilla, sabemos que tenemos a la mano la librería `math`, la cual ofrece el método `math.comb`:
 
-
 ```py
 import math as m
 
 print(m.comb(5, 3)) # -> 10
 ```
-
 
 Antes de proceder con el código de nuestra versión, por supuesto, vamos a averiguar como funcionan las combinaciones para desarrollar optimizaciones.
 
@@ -168,6 +167,73 @@ def memoized_combination(n: int, k: int) -> int:
 ```
 
 Esto reducirá los cálculos enormemente, pero igual el consumo de memoria empeora.
+
+Para una última versión volvamos a la fórmula original:
+
+$
+  binom(n, k) = n!/(k! (n - k)!)
+$
+
+Desenrrollando el factorial $n!$ hasta llegar a $(n - k)!$ desarrollamos:
+
+$
+  binom(n, k) & = n!/(k! (n - k)!) \
+  binom(n, k) & = (n(n - 1)(n - 2) dot ... dot (n - k + 1) cancel((n - k)!))/(k! cancel((n - k)!)) \
+  binom(n, k) & = (n(n - 1)(n - 2) dot ... dot (n - k + 1))/(k!)
+$
+
+Y ahora podemos emparejar cada término del factorial $k!$ con cada término del numerador para obtener dos secuencias:
+
+$
+  binom(n, k) & = n/k dot (n - 1)/(k - 1) dot (n - 2)/(k - 2) dot ... dot (n - k + 1)/1 \
+  binom(n, k) & = n/1 dot (n - 1)/2 dot (n - 2)/3 dot ... dot (n - k + 1)/k \
+$
+
+¿Notas como empezamos con $n/k$ y vamos restando de a uno en cada término? Podemos generalizarlo con un producto para cada secuencia respectivamente:
+
+$
+  binom(n, k) = product_(i = 0)^(k - 1) (n - i)/(k - i) = product_(i = 1)^(k) (n - i + 1)/i
+$
+
+Esta es la forma más eficiente de calcular la combinación, al reducirlo a un producto. Sin riesgo de `RecursionError` y con un consumo de memoria constante. Usaremos la primera versión:
+
+```py
+def iterative_combination(n: int, k: int) -> int:
+    """Calcula combinaciones de forma iterativa usando la fรณrmula desenrollada"""
+
+    # Error de tipo si no son enteros
+    if type(n) is not int or type(k) is not int:
+        raise TypeError(f"Valores no vรกlidos: {n}, {k}")
+
+    # Error si alguno es menor que cero o si n es menor que k
+    if n < 0 or k < 0 or n < k:
+        raise ValueError(f"Valores no vรกlidos: {n}, {k}")
+
+    # Optimizamos usando la propiedad C(n, k) = C(n, n - k)
+    k = min(k, n - k)
+
+    result: int = 1
+    for i in range(k):
+        result *= (n - i) // (k - i)
+        print(result)
+
+    return result
+```
+
+Nótese que incluimos una optimización:
+
+```py
+# Optimizamos usando la propiedad C(n, k) = C(n, n - k)
+k = min(k, n - k)
+```
+
+Como lo dice el comentario, es una aplicación de la *identidad de Pascal*:
+
+$
+  binom(n, k) = binom(n, n - k)
+$
+
+Esto nos permite reducir el número de términos a calcular, usando el número más pequeño de los dos disponibles sin alterar el resultado. Si funciona, está es la prueba de la identidad.
 
 #pagebreak()
 

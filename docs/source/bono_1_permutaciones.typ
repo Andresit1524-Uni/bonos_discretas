@@ -3,7 +3,7 @@
 
 = Bono 1: Permutaciones y k-permutaciones
 
-#callout(color: rgb("#bbf7d0"))[
+#callout()[
   Diseñe un programa que reciba dos enteros $n$ y $r$, con $0 <= r <= n$, y calcule el número de formas de ordenar $r$ objetos distintos tomados de un conjunto de $n$ objetos distintos.
 
   El programa debe calcular:
@@ -52,7 +52,7 @@
   Por el otro lado, la k-permutación es un tipo de permutación en el que se seleccionan $k$ elementos de un conjunto de $n$ elementos y cuenta cuantas posibilidades de elegir hay. La fórmula para esto es:
 
   $
-    n"P"k = P(n, k) =  n!/(n - k)!
+    n"P"k = P(n, k) = n!/(n - k)!
   $
 
   Es necesario que $k <= n$, porque si no, $n - k$ es negativo, y por ende $(n - k)!$ no existe.

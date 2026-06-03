@@ -5,9 +5,6 @@ Los algoritmos incluyen verificaciones de tipo, porque resulta que las anotacion
 son de adorno literalmente >:(
 """
 
-import math as m
-from typing import Optional
-
 
 # region Algoritmos
 
@@ -31,12 +28,68 @@ def recursive_combination(n: int, k: int) -> int:
     return recursive_combination(n - 1, k) + recursive_combination(n - 1, k - 1)
 
 
+cached = {}
+
+
+def memoized_combination(n: int, k: int) -> int:
+    if (n, k) in cached:
+        return cached[(n, k)]
+
+    # Error de tipo si no son enteros
+    if type(n) is not int or type(k) is not int:
+        raise TypeError(f"Valores no válidos: {n}, {k}")
+
+    # Error si alguno es menor que cero o si n es menor que k
+    if n < 0 or k < 0 or n < k:
+        raise ValueError(f"Valores no válidos: {n}, {k}")
+
+    # Caso base
+    if k == 0 or k == n:
+        cached[(n, k)] = 1
+        return 1
+
+    # Recursión y caché
+    result = memoized_combination(n - 1, k) + memoized_combination(n - 1, k - 1)
+    cached[(n, k)] = result
+    return result
+
+
+def iterative_combination(n: int, k: int) -> int:
+    """Calcula combinaciones de forma iterativa usando la fórmula desenrollada"""
+
+    # Error de tipo si no son enteros
+    if type(n) is not int or type(k) is not int:
+        raise TypeError(f"Valores no válidos: {n}, {k}")
+
+    # Error si alguno es menor que cero o si n es menor que k
+    if n < 0 or k < 0 or n < k:
+        raise ValueError(f"Valores no válidos: {n}, {k}")
+
+    # Optimizamos usando la propiedad C(n, k) = C(n, n - k)
+    k = min(k, n - k)
+
+    result: int = 1
+    for i in range(k):
+        result *= (n - i) // (k - i)
+        print(result)
+
+    return result
+
+
 def pascal_triangle(n: int):
     """Imprime el triángulo de Pascal con n filas"""
 
+    # Error de tipo si no es un entero
+    if type(n) is not int:
+        raise TypeError(f"Valor no válido: {n}")
+
+    # Error si es menor que cero
+    if n < 0:
+        raise ValueError(f"Valor no válido: {n}")
+
     row = []
     for _ in range(n):
-        # Crea la fila
+        # Crea la nueva fila sobrescribiendo la anterior
         for i in range(len(row) - 1, 0, -1):
             row[i] = row[i] + row[i - 1]
         row.append(1)
