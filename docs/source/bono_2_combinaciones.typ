@@ -289,12 +289,37 @@ def pascal_triangle(n: int):
         print("\t".join(str(x) for x in row))
 ```
 
+Además, implementamos una función para obtener únicamente la fila $n$ del triángulo de Pascal (siendo $n$ 0-indexada):
+
+```py
+def pascal_row(n: int) -> list[int]:
+    """Calcula y devuelve la fila n del triángulo de Pascal (0-indexada)"""
+
+    if type(n) is not int:
+        raise TypeError(f"Valor no válido: {n}")
+    if n < 0:
+        raise ValueError(f"Valor no válido: {n}")
+
+    row = []
+    for _ in range(n + 1):
+        for i in range(len(row) - 1, 0, -1):
+            row[i] = row[i] + row[i - 1]
+        row.append(1)
+
+    return row
+```
+
 #pagebreak()
 
 === Aplicación de consola
 Para una aplicación de consola solo usaremos `print`s e `input`s para seguir un flujo de usuario básico. También se incluyen verificaciones de errores bien manejados y un código limpio y modular.
 
-El programa estará en el archivo `bono_2_combinaciones/main.py`.
+El programa estará en el archivo `bono_2_combinaciones/main.py`. Para cumplir estrictamente con los objetivos propuestos, la aplicación permite:
+
+- Calcular combinaciones con verificación automática en tiempo de ejecución de la identidad de Pascal $binom(n, r) = binom(n, n - r)$.
+- Generar e imprimir únicamente la fila $n$ del triángulo de Pascal de manera independiente.
+- Generar el triángulo completo hasta la fila $n$.
+- Visualizar de forma procedural ejemplos cotidianos prácticos (como comités, manos de póker y boletos de lotería) detallando el procedimiento y simplificación de las combinaciones.
 
 === Pruebas y casos especiales
 Para probar este sistema vamos a probar cuatro casos, con varios ejemplos diferentes para cada caso y por cada algoritmo:

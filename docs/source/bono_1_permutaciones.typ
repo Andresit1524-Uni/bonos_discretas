@@ -221,7 +221,7 @@ def k_permutation(n: int, k: int) -> int:
 === Aplicación de consola
 Para una aplicación de consola solo usaremos `print`s e `input`s para seguir un flujo de usuario básico. También se incluyen verificaciones de errores bien manejados y un código limpio y modular.
 
-El programa estará en el archivo `bono_1_permutaciones/main.py`
+El programa estará en el archivo `bono_1_permutaciones/main.py`. Este permite calcular permutaciones de forma iterativa y recursiva, así como k-permutaciones. El programa muestra el procedimiento paso a paso de forma dinámica (por ejemplo, mostrando la secuencia de multiplicaciones) y cuenta con una funcionalidad específica para comparar de manera interactiva dos casos de k-permutaciones, informando cuál tiene más formas y su proporción.
 
 === Pruebas y casos especiales
 Para probar este sistema vamos a probar cuatro casos, con varios ejemplos diferentes para cada caso y por cada algoritmo:
