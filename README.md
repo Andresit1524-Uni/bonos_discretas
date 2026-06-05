@@ -66,8 +66,8 @@ Para el correcto uso de este repositorio se necesitan las siguientes herramienta
 3. Si quieres ejecutar los test
 
     ```bash
-    py source/bono_1_permutaciones/test.py
-    py source/bono_2_combinaciones/test.py
+    py source/bono_1_permutaciones/tests.py
+    py source/bono_2_combinaciones/tests.py
     ```
 
 4. Si quieres compilar la documentación (aunque ya lo está, es opcional), instala Typst y ejecuta:

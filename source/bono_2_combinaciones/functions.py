@@ -94,3 +94,24 @@ def pascal_triangle(n: int):
 
         # Imprime la fila
         print("\t".join(str(x) for x in row))
+
+
+def pascal_row(n: int) -> list[int]:
+    """Calcula y devuelve la fila n del triángulo de Pascal (0-indexada)"""
+
+    # Error de tipo si no es un entero
+    if type(n) is not int:
+        raise TypeError(f"Valor no válido: {n}")
+
+    # Error si es menor que cero
+    if n < 0:
+        raise ValueError(f"Valor no válido: {n}")
+
+    row = []
+    for _ in range(n + 1):
+        for i in range(len(row) - 1, 0, -1):
+            row[i] = row[i] + row[i - 1]
+        row.append(1)
+
+    return row
+
