@@ -68,8 +68,8 @@ def iterative_combination(n: int, k: int) -> int:
     k = min(k, n - k)
 
     result: int = 1
-    for i in range(k):
-        result *= (n - i) // (k - i)
+    for i in range(1, k + 1):
+        result = result * (n - i + 1) // i
 
     return result
 

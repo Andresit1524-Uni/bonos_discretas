@@ -35,7 +35,7 @@ $
   Nótese que es igual a la fórmula de la k-permutación, pero con un $k!$ en el denominador. Esto equivale a tomar todas las combinaciones y dividirlo por las $k!$ posibles órdenes de la selección, para contar solo las selecciones únicas. En otras palabras:
 
   $
-    n"C"k = P(n, k)/k!
+    n"C"k = P(n, k) / k!
   $
 ]
 
@@ -141,7 +141,7 @@ def recursive_combination(n: int, k: int) -> int:
 
 Sin embargo nos pueden preocupar los casos grandes, porque esta función es recursiva y se presta para altos consumos de memoria, calculos duplicados y un riesgo de `RecursionError` en Python.
 
-=== Memoización
+=== Usando memoización
 Para solucionar los problemas de la recursión, podemos usar la *memoización* para guardar los resultados de las combinaciones ya calculadas y evitar cálculos repetidos:
 
 ```py
@@ -181,9 +181,9 @@ $
 Desenrrollando el factorial $n!$ hasta llegar a $(n - k)!$ desarrollamos:
 
 $
-  binom(n, k) & = n!/(k! (n - k)!) \
-  binom(n, k) & = (n(n - 1)(n - 2) dot ... dot (n - k + 1) cancel((n - k)!))/(k! cancel((n - k)!)) \
-  binom(n, k) & = (n(n - 1)(n - 2) dot ... dot (n - k + 1))/(k!)
+  binom(n, k) & = n! / (k! (n - k)!) \
+  binom(n, k) & = (n(n - 1)(n - 2) dot ... dot (n - k + 1) cancel((n - k)!)) / (k! cancel((n - k)!)) \
+  binom(n, k) & = (n(n - 1)(n - 2) dot ... dot (n - k + 1)) / (k!)
 $
 
 Y ahora podemos emparejar cada término del factorial $k!$ con cada término del numerador para obtener dos secuencias:
@@ -199,7 +199,7 @@ $
   binom(n, k) = product_(i = 0)^(k - 1) (n - i)/(k - i) = product_(i = 1)^(k) (n - i + 1)/i
 $
 
-Esta es la forma más eficiente de calcular la combinación, al reducirlo a un producto. Sin riesgo de `RecursionError` y con un consumo de memoria constante. Usaremos la primera versión:
+Esta es la forma más eficiente de calcular la combinación, al reducirlo a un producto. Sin riesgo de `RecursionError` y con un consumo de memoria constante. Usaremos la segunda versión porque es más adecuada para cálculo basado en enteros:
 
 ```py
 def iterative_combination(n: int, k: int) -> int:
@@ -217,8 +217,8 @@ def iterative_combination(n: int, k: int) -> int:
     k = min(k, n - k)
 
     result: int = 1
-    for i in range(k):
-        result *= (n - i) // (k - i)
+    for i in range(1, k + 1):
+        result = result * (n - i + 1) // i
 
     return result
 ```
@@ -294,7 +294,7 @@ def pascal_triangle(n: int):
 === Aplicación de consola
 Para una aplicación de consola solo usaremos `print`s e `input`s para seguir un flujo de usuario básico. También se incluyen verificaciones de errores bien manejados y un código limpio y modular.
 
-El programa estará en el archivo `bono_2_combinaciones/main.py`
+El programa estará en el archivo `bono_2_combinaciones/main.py`.
 
 === Pruebas y casos especiales
 Para probar este sistema vamos a probar cuatro casos, con varios ejemplos diferentes para cada caso y por cada algoritmo:
@@ -302,17 +302,18 @@ Para probar este sistema vamos a probar cuatro casos, con varios ejemplos difere
 + Números correctos en un rango común (1-100)
 + Uso de negativos y del cero
 + Números grandes (superiores a 1000)
-+ Entradas incorrectas (mal rango o tipo incorrecto)
++ Entradas incorrectas (rango o tipo incorrecto)
 
 Este programa estará en el archivo `bono_2_combinaciones/tests.py`
 
 #pagebreak()
 
 == Comentarios y extras
-+ Lee los comentarios del primer bono primero.
++ Lee los comentarios del primer bono.
 + Al igual que con las permutaciones, la versión iterativa es probablemente la más adecuada por consumo de memoria, rendimiento y menos desperdicio.
++ Tenía pensado hablar de optimización de llamada de cola acá también pero preferí abordar otras formas de optimización y así no tener tantas variantes a comparar.
 + Me he encontrado con buenos recursos para la escritura de estos dos bonos, como #link("https://github.com/vbasky/sublime-vscode-plus")[esta gramática de lenguaje para Sublime] que me permitío añadir resaltado de código estilo VSCode. También disponible en #link("https://gist.github.com/Andresit1524/d5b765ce28f743121907ce3419cfbe80")[este gist con la versión en `tmTheme`] (el formato que Typst usa para sus temas de sintaxis), también disponible en este repo (`vscode_darkplus.tmTheme`).
-+ Cada día me arrepiento menos de no haber usado libretas de jupyter para estos bonos. Que hasta dan ganas de crear una alternativa a jupyter que si sirva bien. Quizá aprenda Rust para lograrlo.
++ Cada día me arrepiento menos de no haber usado libretas de Jupyter para estos bonos. Hasta dan ganas de crear una alternativa a Jupyter que sí sirva bien. Quizá aprenda Rust para lograrlo. O simplemente use *Weave.jl*.
 
 == Referencias
 - Khan Academy. (s.f.). _Introducción a las combinaciones_ [Video]. https://es.khanacademy.org/math/precalculus/x9e81a4f98389efdf:prob-comb/x9e81a4f98389efdf:combinations/v/introduction-to-combinations
