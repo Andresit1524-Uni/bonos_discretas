@@ -1,6 +1,12 @@
+import sys
 import os
-import source.bono_1_permutaciones.functions as f
-import source.utils.utils as u
+
+# Añadimos el directorio raíz (source) al path para que Python
+# pueda localizar el paquete 'utils'
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+import functions as f
+import utils.utils as u
 
 
 # region Casos
@@ -93,6 +99,7 @@ while True:
         if value is None:
             u.print_margin("Saliendo (entrada cancelada)")
             break
+
         match value:
             case 1:
                 make_iterative_permutation()

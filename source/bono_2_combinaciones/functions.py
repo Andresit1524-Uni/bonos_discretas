@@ -6,9 +6,6 @@ son de adorno literalmente >:(
 """
 
 
-# region Algoritmos
-
-
 def recursive_combination(n: int, k: int) -> int:
     """Calcula combinaciones de forma recursiva usando la regla de Pascal"""
 
@@ -28,6 +25,8 @@ def recursive_combination(n: int, k: int) -> int:
     return recursive_combination(n - 1, k) + recursive_combination(n - 1, k - 1)
 
 
+# Esta variable se considera persistente por módulos, por lo que si se llama varias veces su efecto
+# de memoización se conserva
 cached = {}
 
 
@@ -95,6 +94,3 @@ def pascal_triangle(n: int):
 
         # Imprime la fila
         print("\t".join(str(x) for x in row))
-
-
-# endregion
